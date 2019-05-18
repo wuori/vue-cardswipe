@@ -1,11 +1,11 @@
-# vue-credit-card-validation
+# vue-cardswipe
 
 [![npm](https://img.shields.io/npm/v/vue-cardswipe.svg)](https://www.npmjs.com/package/vue-cardswipe)
 [![vue2](https://img.shields.io/badge/vue-2.x-brightgreen.svg)](https://vuejs.org/)
 
 A Vue plugin for reading credit card data from magnetic swipe readers.
 
-A directive is provided for input masking form fields,
+Refer to the [original plugin](https://github.com/CarlRaymond/jquery.cardswipe) for more detailed documentation.
 
 [Demo](https://wuori.github.io/vue-cardswipe/example/)
 
