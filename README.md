@@ -5,9 +5,11 @@
 
 A Vue plugin for reading credit card data from magnetic swipe readers.
 
-Refer to the [original plugin](https://github.com/CarlRaymond/jquery.cardswipe  ) for more detailed documentation.
+This plugin is a port from  the [CarlRaymond/jquery.cardswipe](https://github.com/CarlRaymond/jquery.cardswipe). Please view the repo for more detailed documentation.
 
-[Demo](https://wuori.github.io/vue-cardswipe/example/)
+[CardSwipe Demo](https://wuori.github.io/vue-cardswipe/example/)
+
+Note: Demo requires a magnetic card reader to use.
 
 ## Installation
 
