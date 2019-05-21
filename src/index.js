@@ -12,7 +12,7 @@ const VueCardSwipe = {
   }
 }
 
-export default cardSwipe;
+export default VueCardSwipe;
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(VueCardSwipe)
