@@ -1,5 +1,5 @@
 /*!
- * vue-cardswipe v0.1.0 
+ * vue-cardswipe v0.1.1 
  * (c) 2019 Michael Wuori
  * Released under the MIT License.
  */
