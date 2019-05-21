@@ -32,7 +32,12 @@ Vue.use(VueCardSwipe);
 
 new Vue({
   el: '#app',
+  ...
   methods{
+    handleSwipeSuccess(cardData){
+        this.number = cardData.account;
+        this.expiry = cardData.expMonth + '/' + cardData.expYear.slice(-2);  
+    },
     cardSwipeInit: function(){
       this.$cardSwipe.init({
         success: this.handleSwipeSuccess

@@ -1,5 +1,5 @@
 /*!
- * vue-cardswipe v0.1.1 
+ * vue-cardswipe v0.1.8 
  * (c) 2019 Michael Wuori
  * Released under the MIT License.
  */
@@ -9,12 +9,12 @@
     (global.VueCardswipe = factory());
 }(this, (function () { 'use strict';
 
-var cardSwipe$1 = {
+var cardSwipe = {
 
     cardSwipe: undefined,
     settings: {},
     init: function (options){
-        return cardSwipe$1.methods.init(options);
+        return cardSwipe.methods.init(options);
     },
 
     // Built-in parsers. These include simplistic credit card parsers that
@@ -52,7 +52,7 @@ var cardSwipe$1 = {
             if (!match) { return null; }
 
             var account = match[1];
-            if (!cardSwipe$1.luhnChecksum(account))
+            if (!cardSwipe.luhnChecksum(account))
                 { return null; }
 
             var cardData = {
@@ -77,7 +77,7 @@ var cardSwipe$1 = {
             if (!match) { return null; }
 
             var account = match[1];
-            if (!cardSwipe$1.luhnChecksum(account))
+            if (!cardSwipe.luhnChecksum(account))
                 { return null; }
 
             var cardData = {
@@ -102,7 +102,7 @@ var cardSwipe$1 = {
             if (!match) { return null; }
 
             var account = match[1];
-            if (!cardSwipe$1.luhnChecksum(account))
+            if (!cardSwipe.luhnChecksum(account))
                 { return null; }
 
             var cardData = {
@@ -127,7 +127,7 @@ var cardSwipe$1 = {
             if (!match) { return null; }
 
             var account = match[1];
-            if (!cardSwipe$1.luhnChecksum(account))
+            if (!cardSwipe.luhnChecksum(account))
                 { return null; }
 
             var cardData = {
@@ -157,28 +157,28 @@ var cardSwipe$1 = {
     state: function () {
 
         if (arguments.length === 0) {
-            return cardSwipe$1.currentState;
+            return cardSwipe.currentState;
         }
 
         // Set new state.
         var newState = arguments[0];
-        if (newState == cardSwipe$1.state)
+        if (newState == cardSwipe.state)
             { return; }
 
-        if (cardSwipe$1.settings.debug) { console.log("%s -> %s", cardSwipe$1.stateNames[cardSwipe$1.currentState], cardSwipe$1.stateNames[newState]); }
+        if (cardSwipe.settings.debug) { console.log("%s -> %s", cardSwipe.stateNames[cardSwipe.currentState], cardSwipe.stateNames[newState]); }
 
         // Raise events when entering and leaving the READING state
-        if (newState == cardSwipe$1.states.READING){
+        if (newState == cardSwipe.states.READING){
             var event = new CustomEvent('scanstart.cardswipe');
             document.dispatchEvent(event);
         }
 
-        if (cardSwipe$1.currentState == cardSwipe$1.states.READING){
+        if (cardSwipe.currentState == cardSwipe.states.READING){
             var event$1 = new CustomEvent('scanend.cardswipe');
             document.dispatchEvent(event$1);
         }
 
-        cardSwipe$1.currentState = newState;
+        cardSwipe.currentState = newState;
     },
 
     // Array holding scanned characters
@@ -189,52 +189,52 @@ var cardSwipe$1 = {
 
     // Keypress listener
     listener: function (e) {
-        if (cardSwipe$1.settings.debug) { console.log(e.which + ': ' + String.fromCharCode(e.which)); }
-        switch (cardSwipe$1.state()) {
+        if (cardSwipe.settings.debug) { console.log(e.which + ': ' + String.fromCharCode(e.which)); }
+        switch (cardSwipe.state()) {
 
             // IDLE: Look for prfix characters or line 1 or line 2 start
             // characters, and jump to PENDING1 or PENDING2.
-            case cardSwipe$1.states.IDLE:
+            case cardSwipe.states.IDLE:
                 // Look for prefix characters, and jump to PREFIX.
-                if (cardSwipe$1.isInPrefixCodes(e.which)) {
-                    cardSwipe$1.state(cardSwipe$1.states.PREFIX);
+                if (cardSwipe.isInPrefixCodes(e.which)) {
+                    cardSwipe.state(cardSwipe.states.PREFIX);
                     e.preventDefault();
                     e.stopPropagation();
-                    cardSwipe$1.startTimer();
+                    cardSwipe.startTimer();
                 }
 
                 // Cards with (and readers reading) line 1:
                 // look for '%', and jump to PENDING1.
                 if (e.which == 37) {
-                    cardSwipe$1.state(cardSwipe$1.states.PENDING1);
-                    cardSwipe$1.scanbuffer = [];
-                    cardSwipe$1.processCode(e.which);
+                    cardSwipe.state(cardSwipe.states.PENDING1);
+                    cardSwipe.scanbuffer = [];
+                    cardSwipe.processCode(e.which);
                     e.preventDefault();
                     e.stopPropagation();
-                    cardSwipe$1.startTimer();
+                    cardSwipe.startTimer();
                 }
 
                 // Cards without (or readers ignoring) line 1:
                 // look for ';', and jump to PENDING_LINE
                 if (e.which == 59) {
-                    cardSwipe$1.state(cardSwipe$1.states.PENDING2);
-                    cardSwipe$1.scanbuffer = [];
-                    cardSwipe$1.processCode(e.which);
+                    cardSwipe.state(cardSwipe.states.PENDING2);
+                    cardSwipe.scanbuffer = [];
+                    cardSwipe.processCode(e.which);
                     e.preventDefault();
                     e.stopPropagation();
-                    cardSwipe$1.startTimer();
+                    cardSwipe.startTimer();
                 }
 
                 break;
 
             // PENDING1: Look for A-Z then jump to READING.
             // Otherwise, pass the keypress through, reset and jump to IDLE.
-            case cardSwipe$1.states.PENDING1:
+            case cardSwipe.states.PENDING1:
                 // Look for format code character, A-Z. Almost always B for cards
                 // used by the general public. Some reader / OS combinations
                 // will issue lowercase characters when the caps lock key is on.
                 if ((e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <= 122)) {
-                    cardSwipe$1.state(cardSwipe$1.states.READING);
+                    cardSwipe.state(cardSwipe.states.READING);
 
                     // Leaving focus on a form element wreaks browser-dependent
                     // havoc because of keyup and keydown events.  This is a
@@ -242,79 +242,80 @@ var cardSwipe$1 = {
                     var el = document.querySelector(':focus');
                     if (el) { el.blur(); }
 
-                    cardSwipe$1.processCode(e.which);
+                    cardSwipe.processCode(e.which);
                     e.preventDefault();
                     e.stopPropagation();
-                    cardSwipe$1.startTimer();
+                    cardSwipe.startTimer();
                 }
                 else {
-                    cardSwipe$1.clearTimer();
-                    cardSwipe$1.scanbuffer = null;
-                    cardSwipe$1.state(cardSwipe$1.states.IDLE);
+                    cardSwipe.clearTimer();
+                    cardSwipe.scanbuffer = null;
+                    cardSwipe.state(cardSwipe.states.IDLE);
                 }
                 break;
 
             // PENDING_LINE2: look for 0-9, then jump to READING.
             // Otherwise, pass the keypress through, reset and jump to IDLE.
-            case cardSwipe$1.states.PENDING2:
+            case cardSwipe.states.PENDING2:
                 // Look for digit.
                 if ((e.which >= 48 && e.which <= 57)) {
-                    swipeData.state(cardSwipe$1.states.READING);
+                    swipeData.state(cardSwipe.states.READING);
 
-                    $("input").blur();
+                    var el$1 = document.querySelector(':focus');
+                    if (el$1) { el$1.blur(); }
 
-                    cardSwipe$1.processCode(e.which);
+                    cardSwipe.processCode(e.which);
                     e.preventDefault();
                     e.stopPropagation();
-                    cardSwipe$1.startTimer();
+                    cardSwipe.startTimer();
                 }
                 else {
-                    cardSwipe$1.clearTimer();
-                    cardSwipe$1.scanbuffer = null;
-                    cardSwipe$1.state(cardSwipe$1.states.IDLE);
+                    cardSwipe.clearTimer();
+                    cardSwipe.scanbuffer = null;
+                    cardSwipe.state(cardSwipe.states.IDLE);
                 }
                 break;
 
             // READING: Copy characters to buffer until newline, then process the scanned characters
-            case cardSwipe$1.states.READING:
-                cardSwipe$1.processCode(e.which);
-                cardSwipe$1.startTimer();
+            case cardSwipe.states.READING:
+                cardSwipe.processCode(e.which);
+                cardSwipe.startTimer();
                 e.preventDefault();
                 e.stopPropagation();
 
                 // Carriage return indicates end of scan
                 if (e.which == 13) {
-                    cardSwipe$1.clearTimer();
-                    cardSwipe$1.state(cardSwipe$1.states.IDLE);
-                    cardSwipe$1.processScan();
+                    cardSwipe.clearTimer();
+                    cardSwipe.state(cardSwipe.states.IDLE);
+                    cardSwipe.processScan();
                 }
 
-                if (cardSwipe$1.settings.firstLineOnly && e.which == 63) {
+                if (cardSwipe.settings.firstLineOnly && e.which == 63) {
                     // End of line 1.  Return early, and eat remaining characters.
-                    cardSwipe$1.state(cardSwipe$1.states.DISCARD);
-                    cardSwipe$1.processScan();
+                    cardSwipe.state(cardSwipe.states.DISCARD);
+                    cardSwipe.processScan();
                 }
                 break;
 
             // DISCARD: Eat up characters until newline, then jump to IDLE
-            case cardSwipe$1.states.DISCARD:
+            case cardSwipe.states.DISCARD:
                 e.preventDefault();
                 e.stopPropagation();
                 if (e.which == 13) {
-                    cardSwipe$1.clearTimer();
-                    cardSwipe$1.state(cardSwipe$1.states.IDLE);
+                    cardSwipe.clearTimer();
+                    cardSwipe.state(cardSwipe.states.IDLE);
                     return;
                 }
 
-                cardSwipe$1.startTimer();
+                cardSwipe.startTimer();
                 break;
 
             // PREFIX: Eat up characters until % is seen, then jump to PENDING1
-            case cardSwipe$1.states.PREFIX:
+            case cardSwipe.states.PREFIX:
 
                 // If prefix character again, pass it through and return to IDLE state.
-                if (cardSwipe$1.isInPrefixCodes(e.which)) {
-                    cardSwipe$1.state(states.IDLE);
+                if (cardSwipe.isInPrefixCodes(e.which)) {
+                    cardSwipe.state(states.IDLE);
                     return;
                 }
 
@@ -323,62 +324,63 @@ var cardSwipe$1 = {
                 e.stopPropagation();
                 // Look for '%'
                 if (e.which == 37) {
-                    cardSwipe$1.state(states.PENDING1);
-                    cardSwipe$1.scanbuffer = [];
-                    cardSwipe$1.processCode(e.which);
+                    cardSwipe.state(states.PENDING1);
+                    cardSwipe.scanbuffer = [];
+                    cardSwipe.processCode(e.which);
                 }
                 // Look for ';'
                 if (e.which == 59) {
-                    cardSwipe$1. state(states.PENDING2);
-                    cardSwipe$1.scanbuffer = [];
-                    cardSwipe$1.processCode(e.which);
+                    cardSwipe. state(states.PENDING2);
+                    cardSwipe.scanbuffer = [];
+                    cardSwipe.processCode(e.which);
                 }
-                cardSwipe$1.startTimer();
+                cardSwipe.startTimer();
         }
     },
 
     // Converts a scancode to a character and appends it to the buffer.
     processCode: function (code) {
-        cardSwipe$1.scanbuffer.push(String.fromCharCode(code));
+        cardSwipe.scanbuffer.push(String.fromCharCode(code));
     },
 
     startTimer: function () {
-        clearTimeout(cardSwipe$1.timerHandle);
-        cardSwipe$1.timerHandle = setTimeout(cardSwipe$1.onTimeout, cardSwipe$1.settings.interdigitTimeout);
+        clearTimeout(cardSwipe.timerHandle);
+        cardSwipe.timerHandle = setTimeout(cardSwipe.onTimeout, cardSwipe.settings.interdigitTimeout);
     },
 
     clearTimer: function () {
-        clearTimeout(cardSwipe$1.timerHandle);
-        cardSwipe$1.timerHandle = 0;
+        clearTimeout(cardSwipe.timerHandle);
+        cardSwipe.timerHandle = 0;
     },
 
     // Invoked when the timer lapses.
     onTimeout: function () {
-        if (cardSwipe$1.settings.debug) { console.log('Timeout!'); }
-        if (cardSwipe$1.state() == cardSwipe$1.states.READING) {
-            cardSwipe$1.processScan();
+        if (cardSwipe.settings.debug) { console.log('Timeout!'); }
+        if (cardSwipe.state() == cardSwipe.states.READING) {
+            cardSwipe.processScan();
         }
-        cardSwipe$1.scanbuffer = null;
-        cardSwipe$1.state(states.IDLE);
+        cardSwipe.scanbuffer = null;
+        cardSwipe.state(states.IDLE);
     },
 
     // Processes the scanned card
     processScan: function () {
 
-        if (cardSwipe$1.settings.debug) {
-            console.log(cardSwipe$1.scanbuffer);
+        if (cardSwipe.settings.debug) {
+            console.log(cardSwipe.scanbuffer);
         }
 
-        var rawData = cardSwipe$1.scanbuffer.join('');
+        var rawData = cardSwipe.scanbuffer.join('');
 
         // Invoke rawData callback if defined, a testing hook.
-        if (cardSwipe$1.settings.rawDataCallback) { settings.rawDataCallback.call(this, rawData); }
+        if (cardSwipe.settings.rawDataCallback) { settings.rawDataCallback.call(this, rawData); }
 
-        var result = cardSwipe$1.parseData(rawData);
+        var result = cardSwipe.parseData(rawData);
 
         if (result) {
+
             // Scan complete. Invoke callback
-            if (cardSwipe$1.settings.success) { cardSwipe$1.settings.success.call(this, result); }
+            if (cardSwipe.settings.success) { cardSwipe.settings.success.call(this, result); }
 
             // Raise success event.
             var event = new CustomEvent('success.cardswipe', { detail: { result: result }});
@@ -386,7 +388,7 @@ var cardSwipe$1 = {
         }
         else {
             // All parsers failed.
-            if (cardSwipe$1.settings.failure) { settings.failure.call(this, rawData); }
+            if (cardSwipe.settings.failure) { settings.failure.call(this, rawData); }
             document.dispatchEvent("failure.cardswipe");
         }
     },
@@ -396,9 +398,8 @@ var cardSwipe$1 = {
     parseData: function (rawData) {
         var this$1 = this;
 
-        for (var i = 0; i < cardSwipe$1.settings.parsers.length; i++) {
-            var ref = cardSwipe$1.settings.parsers[i];
-            console.log('ref', ref);
+        for (var i = 0; i < cardSwipe.settings.parsers.length; i++) {
+            var ref = cardSwipe.settings.parsers[i];
             var parser = (void 0);
 
             // ref is a function or the name of a builtin parser
@@ -406,7 +407,7 @@ var cardSwipe$1 = {
                 parser = ref;
             }
             else if (typeof (ref) === "string") {
-                parser = cardSwipe$1.builtinParsers[ref];
+                parser = cardSwipe.builtinParsers[ref];
             }
 
             if (parser != null) {
@@ -422,14 +423,30 @@ var cardSwipe$1 = {
         return null;
     },
 
+    bindOn: function(elm, evtName, handler) {
+        evtName.split('.').reduce(function (evtPart, evt) {
+            evt = evt ? evt + '.' + evtPart : evtPart;
+            elm.addEventListener(evt, handler, true);
+            return evt;
+        }, '');
+    },
+
+    bindOff: function(elm, evtName, handler) {
+        evtName.split('.').reduce(function (evtPart, evt) {
+            evt = evt ? evt + '.' + evtPart : evtPart;
+            elm.removeEventListener(evt, handler, true);
+            return evt;
+        }, '');
+    },
+
     // Binds the event listener
     bindListener: function () {
-        $(document).on("keypress.cardswipe-listener", cardSwipe$1.listener);
+        document.addEventListener("keypress", cardSwipe.listener);
     },
 
     // Unbinds the event listener
     unbindListener: function () {
-        $(document).off(".cardswipe-listener", cardSwipe$1.listener);
+        document.removeEventListener("keypress", cardSwipe.listener);
     },
 
     // Default callback used if no other specified. Works with default parser.
@@ -439,10 +456,11 @@ var cardSwipe$1 = {
     },
 
     isInPrefixCodes: function (arg) {
-        if (!cardSwipe$1.settings.prefixCodes) {
+        if (!cardSwipe.settings.prefixCodes) {
             return false;
         }
-        return $.inArray(arg, cardSwipe$1.settings.prefixCodes) != -1;
+        return (cardSwipe.settings.prefixCodes.indexOf(arg) !== -1);
+        //return $.inArray(arg, cardSwipe.settings.prefixCodes) != -1;
     },
 
     // Apply the Luhn checksum test.  Returns true on a valid account number.
@@ -479,7 +497,7 @@ var cardSwipe$1 = {
             var defaults = {
                 enabled: true,
                 interdigitTimeout: 250,
-                success: cardSwipe$1.defaultSuccessCallback,
+                success: cardSwipe.defaultSuccessCallback,
                 failure: null,
                 parsers: ["visa", "mastercard", "amex", "discover", "generic"],
                 firstLineOnly: false,
@@ -487,20 +505,22 @@ var cardSwipe$1 = {
                 debug: false
             };
 
-            cardSwipe$1.settings = $.extend({}, defaults, options);
+            cardSwipe.settings = Object.assign(defaults, options);
+
+            console.log(cardSwipe.settings);
 
             // Is a prefix character defined?
-            if (cardSwipe$1.settings.prefixCharacter) {
+            if (cardSwipe.settings.prefixCharacter) {
 
                 // Check if prefix character is an array, if its not, convert
-                var isPrefixCharacterArray = Object.prototype.toString.call(cardSwipe$1.settings.prefixCharacter) === '[object Array]';
+                var isPrefixCharacterArray = Object.prototype.toString.call(cardSwipe.settings.prefixCharacter) === '[object Array]';
                 if (!isPrefixCharacterArray) {
-                    cardSwipe$1.settings.prefixCharacter = [settings.prefixCharacter];
+                    cardSwipe.settings.prefixCharacter = [settings.prefixCharacter];
                 }
 
-                cardSwipe$1.settings.prefixCodes = [];
-                for (var i in cardSwipe$1.settings.prefixCharacter){
-                    if (cardSwipe$1.settings.prefixCharacter[i].length != 1) {
+                cardSwipe.settings.prefixCodes = [];
+                for (var i in cardSwipe.settings.prefixCharacter){
+                    if (cardSwipe.settings.prefixCharacter[i].length != 1) {
                         throw 'prefixCharacter must be a single character';
                     }
                     // convert to character code
@@ -509,21 +529,21 @@ var cardSwipe$1 = {
             }
 
             // Reset state
-            cardSwipe$1.clearTimer();
-            cardSwipe$1.state(cardSwipe$1.states.IDLE);
-            cardSwipe$1.scanbuffer = null;
-            cardSwipe$1.unbindListener();
+            cardSwipe.clearTimer();
+            cardSwipe.state(cardSwipe.states.IDLE);
+            cardSwipe.scanbuffer = null;
+            cardSwipe.unbindListener();
 
-            if (cardSwipe$1.settings.enabled)
-                { cardSwipe$1.methods.enable(); }
+            if (cardSwipe.settings.enabled)
+                { cardSwipe.methods.enable(); }
         },
 
         disable: function () {
-            cardSwipe$1.unbindListener();
+            cardSwipe.unbindListener();
         },
 
         enable: function () {
-            cardSwipe$1.bindListener();
+            cardSwipe.bindListener();
         }
     }
 
@@ -532,7 +552,7 @@ var cardSwipe$1 = {
 var VueCardSwipe = {
   install: function install(vue, opts) {
     // provide plugin to Vue
-    Vue.prototype.$cardSwipe = cardSwipe$1;
+    vue.prototype.$cardSwipe = cardSwipe;
     // Vue.mixin({
     //   mounted() {
     //     cardSwipe.methods.init(opts);
@@ -545,6 +565,6 @@ if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(VueCardSwipe);
 }
 
-return cardSwipe$1;
+return VueCardSwipe;
 
 })));

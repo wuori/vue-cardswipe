@@ -250,7 +250,8 @@ const cardSwipe = {
                 if ((e.which >= 48 && e.which <= 57)) {
                     swipeData.state(cardSwipe.states.READING);
 
-                    $("input").blur();
+                    let el = document.querySelector(':focus');
+                    if (el) el.blur();
 
                     cardSwipe.processCode(e.which);
                     e.preventDefault();
@@ -366,6 +367,7 @@ const cardSwipe = {
         let result = cardSwipe.parseData(rawData);
 
         if (result) {
+
             // Scan complete. Invoke callback
             if (cardSwipe.settings.success) { cardSwipe.settings.success.call(this, result); }
 
@@ -385,7 +387,6 @@ const cardSwipe = {
     parseData: function (rawData) {
         for (let i = 0; i < cardSwipe.settings.parsers.length; i++) {
             let ref = cardSwipe.settings.parsers[i];
-            console.log('ref', ref);
             let parser;
 
             // ref is a function or the name of a builtin parser
@@ -409,14 +410,30 @@ const cardSwipe = {
         return null;
     },
 
+    bindOn: function(elm, evtName, handler) {
+        evtName.split('.').reduce(function (evtPart, evt) {
+            evt = evt ? evt + '.' + evtPart : evtPart;
+            elm.addEventListener(evt, handler, true);
+            return evt;
+        }, '');
+    },
+
+    bindOff: function(elm, evtName, handler) {
+        evtName.split('.').reduce(function (evtPart, evt) {
+            evt = evt ? evt + '.' + evtPart : evtPart;
+            elm.removeEventListener(evt, handler, true);
+            return evt;
+        }, '');
+    },
+
     // Binds the event listener
     bindListener: function () {
-        $(document).on("keypress.cardswipe-listener", cardSwipe.listener);
+        document.addEventListener("keypress", cardSwipe.listener);
     },
 
     // Unbinds the event listener
     unbindListener: function () {
-        $(document).off(".cardswipe-listener", cardSwipe.listener);
+        document.removeEventListener("keypress", cardSwipe.listener);
     },
 
     // Default callback used if no other specified. Works with default parser.
@@ -429,7 +446,8 @@ const cardSwipe = {
         if (!cardSwipe.settings.prefixCodes) {
             return false;
         }
-        return $.inArray(arg, cardSwipe.settings.prefixCodes) != -1;
+        return (cardSwipe.settings.prefixCodes.indexOf(arg) !== -1);
+        //return $.inArray(arg, cardSwipe.settings.prefixCodes) != -1;
     },
 
     // Apply the Luhn checksum test.  Returns true on a valid account number.
@@ -472,7 +490,9 @@ const cardSwipe = {
                 debug: false
             };
 
-            cardSwipe.settings = $.extend({}, defaults, options);
+            cardSwipe.settings = Object.assign(defaults, options);
+
+            console.log(cardSwipe.settings);
 
             // Is a prefix character defined?
             if (cardSwipe.settings.prefixCharacter) {
