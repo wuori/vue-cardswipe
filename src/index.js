@@ -3,7 +3,7 @@ import { default as cardSwipe } from './cardswipe.js';
 const VueCardSwipe = {
   install(vue, opts) {
     // provide plugin to Vue
-    Vue.prototype.$cardSwipe = cardSwipe;
+    vue.prototype.$cardSwipe = cardSwipe;
     // Vue.mixin({
     //   mounted() {
     //     cardSwipe.methods.init(opts);
