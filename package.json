@@ -1,7 +1,7 @@
 {
   "name": "vue-cardswipe",
   "description": "A Vue plugin for capturing data from magnetic card readers.",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "author": {
     "name": "Michael Wuori",
     "email": "michael.wuori@gmail.com"
