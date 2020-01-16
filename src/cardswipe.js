@@ -492,8 +492,6 @@ const cardSwipe = {
 
             cardSwipe.settings = Object.assign(defaults, options);
 
-            console.log(cardSwipe.settings);
-
             // Is a prefix character defined?
             if (cardSwipe.settings.prefixCharacter) {
 
