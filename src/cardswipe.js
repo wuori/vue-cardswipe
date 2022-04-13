@@ -248,7 +248,7 @@ const cardSwipe = {
             case cardSwipe.states.PENDING2:
                 // Look for digit.
                 if ((e.which >= 48 && e.which <= 57)) {
-                    swipeData.state(cardSwipe.states.READING);
+                    cardSwipe.state(cardSwipe.states.READING);
 
                     let el = document.querySelector(':focus');
                     if (el) el.blur();
