@@ -1,6 +1,6 @@
 /*!
- * vue-cardswipe v0.1.8 
- * (c) 2019 Michael Wuori
+ * vue-cardswipe v0.1.12 
+ * (c) 2022 Michael Wuori
  * Released under the MIT License.
  */
 var cardSwipe = {
@@ -253,7 +253,7 @@ var cardSwipe = {
             case cardSwipe.states.PENDING2:
                 // Look for digit.
                 if ((e.which >= 48 && e.which <= 57)) {
-                    swipeData.state(cardSwipe.states.READING);
+                    cardSwipe.state(cardSwipe.states.READING);
 
                     var el$1 = document.querySelector(':focus');
                     if (el$1) { el$1.blur(); }
@@ -500,8 +500,6 @@ var cardSwipe = {
             };
 
             cardSwipe.settings = Object.assign(defaults, options);
-
-            console.log(cardSwipe.settings);
 
             // Is a prefix character defined?
             if (cardSwipe.settings.prefixCharacter) {
